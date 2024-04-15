@@ -4,9 +4,7 @@
 
 <section class="section-wrapper">
   <div class="container">
-    <h1 class="heading--section">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit
-    </h1>
+    <slot name="heading" />
     <p class="section-body">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua. Tortor at auctor urna
@@ -43,7 +41,8 @@
 <style lang="scss">
   @import "../../styles/variables";
 
-  h1 {
+  h1,
+  h2 {
     margin-bottom: 24px;
   }
 

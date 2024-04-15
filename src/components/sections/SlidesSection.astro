@@ -9,17 +9,26 @@ const slides = [
   {
     heading: "Tellus molestie nunc non blandit massa volutpat",
     text: "Proin sed libero enim sed faucibus turpis. Ultrices in iaculis nunc sed augue lacus. Tellus id interdum velit laoreet. Accumsan in nisl nisi scelerisque eu ultrices vitae auctor eu. Sed vulputate odio ut enim blandit volutpat maecenas volutpat blandit. Imperdiet dui accumsan sit amet nulla facilisi morbi tempus iaculis. Amet cursus sit amet dictum sit amet. Hendrerit gravida rutrum quisque non tellus.",
-    image: Code,
+    image: {
+      src: Code,
+      alt: "Code on a screen",
+    },
   },
   {
     heading: "Nullam ac tortor vitae purus faucibus ornare suspendisse",
     text: "Enim sit amet venenatis urna cursus eget nunc. Posuere ac ut consequat semper. Felis eget nunc lobortis mattis aliquam. Tempus imperdiet nulla malesuada pellentesque elit. Ullamcorper sit amet risus nullam eget felis eget. Sit amet commodo nulla facilisi nullam vehicula ipsum a arcu. At auctor urna nunc id cursus metus aliquam.",
-    image: Bee,
+    image: {
+      src: Bee,
+      alt: "Bee on a flower",
+    },
   },
   {
     heading: "Ultricies lacus sed turpis tincidunt id aliquet risus feugiat",
     text: "At risus viverra adipiscing at in tellus integer feugiat scelerisque. Sollicitudin ac orci phasellus egestas tellus rutrum tellus. Ultricies mi eget mauris pharetra et ultrices neque. Ut enim blandit volutpat maecenas. Etiam dignissim diam quis enim. Amet consectetur adipiscing elit pellentesque habitant morbi tristique senectus et. Aliquam sem fringilla ut morbi tincidunt augue interdum velit. Nunc consequat interdum varius sit. Sagittis nisl rhoncus mattis rhoncus. At lectus urna duis convallis convallis tellus id interdum velit.",
-    image: Mayfair,
+    image: {
+      src: Mayfair,
+      alt: "Street",
+    },
   },
 ]
 ---
@@ -29,10 +38,10 @@ const slides = [
     <div class="inner">
       <div class="img-wrapper">
         <Image
-          src={slides[0].image}
+          src={slides[0].image.src}
           width={600}
           height={400}
-          alt="Code"
+          alt={slides[0].image.alt}
           class="img"
         />
       </div>
@@ -46,10 +55,10 @@ const slides = [
     <div class="inner">
       <div class="img-wrapper">
         <Image
-          src={slides[1].image}
+          src={slides[1].image.src}
           width={600}
           height={400}
-          alt="Mayfair"
+          alt={slides[1].image.alt}
           class="img"
         />
       </div>
@@ -63,10 +72,10 @@ const slides = [
     <div class="inner">
       <div class="img-wrapper">
         <Image
-          src={slides[2].image}
+          src={slides[2].image.src}
           width={600}
           height={400}
-          alt="Mayfair"
+          alt={slides[2].image.alt}
           class="img"
         />
       </div>
@@ -124,7 +133,7 @@ const slides = [
 
       // Define boundary to trigger horizontal scrolling - set the boundary large enough
       // so the user does not need to scroll precisely to activate horizontal scrolling.
-      const inBoundary = topOfPage > -200 && topOfPage < 200
+      const inBoundary = topOfPage > -100 && topOfPage < 200
 
       if (inBoundary) {
         section.addEventListener("wheel", scrollHorizontally)

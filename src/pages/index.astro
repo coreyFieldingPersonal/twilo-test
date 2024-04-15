@@ -6,9 +6,17 @@ import SlidesSection from "../components/sections/SlidesSection.astro"
 ---
 
 <Layout title="Welcome to Astro.">
-  <TextSection />
+  <TextSection>
+    <h1 slot="heading" class="heading--section">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    </h1>
+  </TextSection>
   <SlidesSection />
-  <TextSection />
+  <TextSection>
+    <h2 slot="heading" class="heading--section">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    </h2>
+  </TextSection>
 </Layout>
 
 <style lang="scss">
