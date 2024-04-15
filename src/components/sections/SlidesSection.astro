@@ -1,0 +1,216 @@
+---
+import { Image } from "astro:assets"
+
+import Mayfair from "../../assets/images/mayfair.webp"
+import Bee from "../../assets/images/bee.webp"
+import Code from "../../assets/images/code.webp"
+
+const slides = [
+  {
+    heading: "Tellus molestie nunc non blandit massa volutpat",
+    text: "Proin sed libero enim sed faucibus turpis. Ultrices in iaculis nunc sed augue lacus. Tellus id interdum velit laoreet. Accumsan in nisl nisi scelerisque eu ultrices vitae auctor eu. Sed vulputate odio ut enim blandit volutpat maecenas volutpat blandit. Imperdiet dui accumsan sit amet nulla facilisi morbi tempus iaculis. Amet cursus sit amet dictum sit amet. Hendrerit gravida rutrum quisque non tellus.",
+    image: Bee,
+  },
+  {
+    heading: "Nullam ac tortor vitae purus faucibus ornare suspendisse",
+    text: "Enim sit amet venenatis urna cursus eget nunc. Posuere ac ut consequat semper. Felis eget nunc lobortis mattis aliquam. Tempus imperdiet nulla malesuada pellentesque elit. Ullamcorper sit amet risus nullam eget felis eget. Sit amet commodo nulla facilisi nullam vehicula ipsum a arcu. At auctor urna nunc id cursus metus aliquam.",
+    image: Code,
+  },
+  {
+    heading: "Ultricies lacus sed turpis tincidunt id aliquet risus feugiat",
+    text: "At risus viverra adipiscing at in tellus integer feugiat scelerisque. Sollicitudin ac orci phasellus egestas tellus rutrum tellus. Ultricies mi eget mauris pharetra et ultrices neque. Ut enim blandit volutpat maecenas. Etiam dignissim diam quis enim. Amet consectetur adipiscing elit pellentesque habitant morbi tristique senectus et. Aliquam sem fringilla ut morbi tincidunt augue interdum velit. Nunc consequat interdum varius sit. Sagittis nisl rhoncus mattis rhoncus. At lectus urna duis convallis convallis tellus id interdum velit.",
+    image: "",
+  },
+]
+---
+
+<section id="slides">
+  <div data-first-slide tabindex="1" class="slide">
+    <div class="inner">
+      <div class="img-wrapper">
+        <Image src={Code} width={600} height={400} alt="Code" class="img" />
+      </div>
+      <div class="text-wrapper">
+        <h2 class="heading-medium">{slides[0].heading}</h2>
+        <p>{slides[0].text}</p>
+      </div>
+    </div>
+  </div>
+  <div tabindex="2" class="slide">
+    <div class="inner">
+      <div class="img-wrapper">
+        <Image src={Bee} width={600} height={400} alt="Mayfair" class="img" />
+      </div>
+      <div class="text-wrapper">
+        <h2 class="heading-medium">{slides[1].heading}</h2>
+        <p>{slides[1].text}</p>
+      </div>
+    </div>
+  </div>
+  <div tabindex="3" data-last-slide class="slide">
+    <div class="inner">
+      <div class="img-wrapper">
+        <Image
+          src={Mayfair}
+          width={600}
+          height={400}
+          alt="Mayfair"
+          class="img"
+        />
+      </div>
+      <div class="text-wrapper">
+        <h2 class="heading-medium">{slides[2].heading}</h2>
+        <p>{slides[2].text}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { observer } from "../../utils/observer"
+
+  const lgBreakpoint = 1728
+
+  const section = document.getElementById("slides") as HTMLDivElement
+  const mainElement = document.getElementsByTagName("main")[0]
+
+  const firstSlide = document.querySelector("[data-first-slide]")
+  const lastSlide = document.querySelector("[data-last-slide]")
+
+  const scrollAmount = window.innerWidth >= lgBreakpoint ? 1600 : 1300
+
+  /**
+   * TODO - Prevent scrollY without using preventDefault - preventDefault is breaking scroll-snap
+   */
+  function scrollHorizontally(e: WheelEvent) {
+    e.preventDefault()
+    const delta = Math.max(-1, Math.min(1, e.deltaY))
+    section.scrollLeft -= delta * scrollAmount
+  }
+
+  /**
+   * Enable verticle scrolling when first or last element is in view
+   */
+  const slideObserver = observer((entry: any) => {
+    const isEndOfScroll =
+      !!entry.target.attributes["data-first-slide"] ||
+      !!entry.target.attributes["data-last-slide"]
+
+    if (isEndOfScroll) {
+      section.removeEventListener("wheel", scrollHorizontally)
+    }
+  })
+
+  /**
+   * We want to add a scroll event to the main element to detect when the slider section reaches
+   * the top of the viewport to trigger horizontal scrolling.
+   */
+
+  if (window.screen.width >= 1440) {
+    // Only activate horizontal scrolling on devices >= 390px
+    mainElement.addEventListener("scroll", (e) => {
+      const topOffset = section.offsetTop
+      const isTop = topOffset - mainElement.scrollTop
+      const inBoundary = isTop > -10 && isTop < 200
+
+      if (inBoundary) {
+        section.addEventListener("wheel", scrollHorizontally)
+      } else {
+        section.removeEventListener("wheel", scrollHorizontally)
+      }
+    })
+
+    slideObserver.observe(firstSlide as Element)
+    slideObserver.observe(lastSlide as Element)
+  }
+</script>
+
+<style lang="scss">
+  @import "../../styles/variables";
+
+  #slides {
+    display: flex;
+    flex-direction: column;
+    background-color: #0075ff;
+    width: 100vw;
+    z-index: 10;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (min-width: $laptop) {
+      scroll-snap-align: center;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      overflow-y: scroll;
+      height: calc(100vh + 96px);
+      flex-direction: row;
+      gap: 0;
+    }
+  }
+
+  .slide {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 100vw;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 64px 30px 30px 30px;
+
+    @media (min-width: $laptop) {
+      padding: 0 100px;
+      flex-direction: row;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+
+    .inner {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      gap: 64px;
+      max-width: 100%;
+
+      @media (min-width: $laptop) {
+        flex-direction: row;
+        padding: 0 80px;
+        max-width: 73vw;
+      }
+    }
+
+    .text-wrapper {
+      @media (min-width: $laptop) {
+        width: 100%;
+      }
+    }
+
+    .img {
+      max-width: 100%;
+      height: 100%;
+      margin-bottom: 32px;
+
+      @media (min-width: $desktop) {
+        width: 600px;
+        margin-bottom: 0;
+      }
+    }
+
+    @media (min-width: $laptop) {
+      &:nth-child(even) {
+        .img-wrapper {
+          order: 2;
+        }
+      }
+    }
+
+    p {
+      color: $off-white;
+      text-align: left;
+      margin-top: 16px;
+    }
+  }
+</style>

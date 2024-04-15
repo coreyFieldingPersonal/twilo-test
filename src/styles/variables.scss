@@ -1,0 +1,29 @@
+
+    // Colours
+    $orange: #ff5c00;
+    $off-white: #f0f3f7;
+    $white: #ffffff;
+    $brand: #0075ff;
+    $dark-grey: #5c7899;
+    $darkest-grey: #204166;
+
+    // Typography
+    $font-sans: 'Calibre', 'Inter', 'San Francisco', 'SF Pro Text', -apple-system, system-ui,
+      sans-serif;
+    $font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+
+    $base: 16px;
+    $section-heading: 44px;
+    $medium-heading: 36px;
+
+    $nav-height: 96px;
+
+    // Animation
+    $easing: cubic-bezier(0.645, 0.045, 0.355, 1);
+    $transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+    // Breakpoints
+    $mobile: 390px;
+    $tablet: 768px;
+    $laptop: 1024px;
+    $desktop: 1700px;
