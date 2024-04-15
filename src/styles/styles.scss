@@ -57,7 +57,7 @@ main {
   .heading-medium {
     color: $white;
     line-height: 35px;
-    font-size: clamp(28px, $medium-heading, $medium-heading);
+    font-size: clamp(28px, 7vw, $medium-heading);
 
     @media (min-width: $laptop) {
       line-height: 45px;
@@ -78,7 +78,9 @@ main {
   }
 
   .section-wrapper {
-    padding: 160px 32px;
+    width: clamp(342px, 100vw, 688px);
+    margin: 0 auto;
+    padding: 64px 24px ;
     text-align: left;
     height: fit-content;
 

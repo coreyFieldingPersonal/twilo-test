@@ -9,17 +9,17 @@ const slides = [
   {
     heading: "Tellus molestie nunc non blandit massa volutpat",
     text: "Proin sed libero enim sed faucibus turpis. Ultrices in iaculis nunc sed augue lacus. Tellus id interdum velit laoreet. Accumsan in nisl nisi scelerisque eu ultrices vitae auctor eu. Sed vulputate odio ut enim blandit volutpat maecenas volutpat blandit. Imperdiet dui accumsan sit amet nulla facilisi morbi tempus iaculis. Amet cursus sit amet dictum sit amet. Hendrerit gravida rutrum quisque non tellus.",
-    image: Bee,
+    image: Code,
   },
   {
     heading: "Nullam ac tortor vitae purus faucibus ornare suspendisse",
     text: "Enim sit amet venenatis urna cursus eget nunc. Posuere ac ut consequat semper. Felis eget nunc lobortis mattis aliquam. Tempus imperdiet nulla malesuada pellentesque elit. Ullamcorper sit amet risus nullam eget felis eget. Sit amet commodo nulla facilisi nullam vehicula ipsum a arcu. At auctor urna nunc id cursus metus aliquam.",
-    image: Code,
+    image: Bee,
   },
   {
     heading: "Ultricies lacus sed turpis tincidunt id aliquet risus feugiat",
     text: "At risus viverra adipiscing at in tellus integer feugiat scelerisque. Sollicitudin ac orci phasellus egestas tellus rutrum tellus. Ultricies mi eget mauris pharetra et ultrices neque. Ut enim blandit volutpat maecenas. Etiam dignissim diam quis enim. Amet consectetur adipiscing elit pellentesque habitant morbi tristique senectus et. Aliquam sem fringilla ut morbi tincidunt augue interdum velit. Nunc consequat interdum varius sit. Sagittis nisl rhoncus mattis rhoncus. At lectus urna duis convallis convallis tellus id interdum velit.",
-    image: "",
+    image: Mayfair,
   },
 ]
 ---
@@ -28,7 +28,13 @@ const slides = [
   <div data-first-slide tabindex="1" class="slide">
     <div class="inner">
       <div class="img-wrapper">
-        <Image src={Code} width={600} height={400} alt="Code" class="img" />
+        <Image
+          src={slides[0].image}
+          width={600}
+          height={400}
+          alt="Code"
+          class="img"
+        />
       </div>
       <div class="text-wrapper">
         <h2 class="heading-medium">{slides[0].heading}</h2>
@@ -39,7 +45,13 @@ const slides = [
   <div tabindex="2" class="slide">
     <div class="inner">
       <div class="img-wrapper">
-        <Image src={Bee} width={600} height={400} alt="Mayfair" class="img" />
+        <Image
+          src={slides[1].image}
+          width={600}
+          height={400}
+          alt="Mayfair"
+          class="img"
+        />
       </div>
       <div class="text-wrapper">
         <h2 class="heading-medium">{slides[1].heading}</h2>
@@ -51,7 +63,7 @@ const slides = [
     <div class="inner">
       <div class="img-wrapper">
         <Image
-          src={Mayfair}
+          src={slides[2].image}
           width={600}
           height={400}
           alt="Mayfair"
@@ -69,7 +81,7 @@ const slides = [
 <script>
   import { observer } from "../../utils/observer"
 
-  const lgBreakpoint = 1728
+  const desktop = 1728
 
   const section = document.getElementById("slides") as HTMLDivElement
   const mainElement = document.getElementsByTagName("main")[0]
@@ -77,15 +89,15 @@ const slides = [
   const firstSlide = document.querySelector("[data-first-slide]")
   const lastSlide = document.querySelector("[data-last-slide]")
 
-  const scrollAmount = window.innerWidth >= lgBreakpoint ? 1600 : 1300
+  const scrollAmount = window.innerWidth >= desktop ? 1600 : 1300
 
   /**
-   * TODO - Prevent scrollY without using preventDefault - preventDefault is breaking scroll-snap
+   * TODO - preventDefault is breaking scroll-snap. Removing this allows smoother snap but enables Y scrolling on the page which we do not want in this case.
    */
   function scrollHorizontally(e: WheelEvent) {
     e.preventDefault()
     const delta = Math.max(-1, Math.min(1, e.deltaY))
-    section.scrollLeft -= delta * scrollAmount
+    section.scrollLeft += delta * scrollAmount
   }
 
   /**
@@ -96,9 +108,7 @@ const slides = [
       !!entry.target.attributes["data-first-slide"] ||
       !!entry.target.attributes["data-last-slide"]
 
-    if (isEndOfScroll) {
-      section.removeEventListener("wheel", scrollHorizontally)
-    }
+    isEndOfScroll && section.removeEventListener("wheel", scrollHorizontally)
   })
 
   /**
@@ -110,8 +120,11 @@ const slides = [
     // Only activate horizontal scrolling on devices >= 390px
     mainElement.addEventListener("scroll", (e) => {
       const topOffset = section.offsetTop
-      const isTop = topOffset - mainElement.scrollTop
-      const inBoundary = isTop > -10 && isTop < 200
+      const topOfPage = topOffset - mainElement.scrollTop
+
+      // Define boundary to trigger horizontal scrolling - set the boundary large enough
+      // so the user does not need to scroll precisely to activate horizontal scrolling.
+      const inBoundary = topOfPage > -200 && topOfPage < 200
 
       if (inBoundary) {
         section.addEventListener("wheel", scrollHorizontally)
@@ -131,13 +144,10 @@ const slides = [
   #slides {
     display: flex;
     flex-direction: column;
-    background-color: #0075ff;
+    background-color: $brand;
     width: 100vw;
-    z-index: 10;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    padding: 64px 24px;
+    gap: 64px;
 
     @media (min-width: $laptop) {
       scroll-snap-align: center;
@@ -157,12 +167,11 @@ const slides = [
     justify-content: center;
     align-items: center;
     justify-content: space-between;
-    padding: 64px 30px 30px 30px;
 
     @media (min-width: $laptop) {
       padding: 0 100px;
       flex-direction: row;
-      scroll-snap-align: start;
+      scroll-snap-align: center;
       scroll-snap-stop: always;
     }
 

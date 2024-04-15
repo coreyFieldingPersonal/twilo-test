@@ -14,13 +14,10 @@
 
     $base: 16px;
     $section-heading: 44px;
-    $medium-heading: 36px;
+    $medium-heading: 32px;
 
+    // Layout
     $nav-height: 96px;
-
-    // Animation
-    $easing: cubic-bezier(0.645, 0.045, 0.355, 1);
-    $transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
 
     // Breakpoints
     $mobile: 390px;
