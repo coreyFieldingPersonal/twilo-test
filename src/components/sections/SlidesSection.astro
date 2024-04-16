@@ -103,7 +103,7 @@ const slides = [
   /**
    * TODO - preventDefault is breaking scroll-snap. Removing this allows smoother snap but enables Y scrolling on the page which we do not want in this case.
    */
-  function scrollHorizontally(e: WheelEvent) {
+  const scrollHorizontally = (e: WheelEvent) => {
     e.preventDefault()
     const delta = Math.max(-1, Math.min(1, e.deltaY))
     section.scrollLeft += delta * scrollAmount
@@ -125,17 +125,20 @@ const slides = [
    * the top of the viewport to trigger horizontal scrolling.
    */
 
+  const isWithinBoundary = () => {
+    // Define boundary to trigger horizontal scrolling - set the boundary large enough
+    // so the user does not need to scroll precisely to activate horizontal scrolling.
+    const topOffset = section.offsetTop
+    const topOfPage = topOffset - mainElement.scrollTop
+
+    const inBoundary = topOfPage > -100 && topOfPage < 200
+    return inBoundary
+  }
+
+  // Only activate horizontal scrolling on devices >= 390px
   if (window.screen.width >= 1440) {
-    // Only activate horizontal scrolling on devices >= 390px
     mainElement.addEventListener("scroll", (e) => {
-      const topOffset = section.offsetTop
-      const topOfPage = topOffset - mainElement.scrollTop
-
-      // Define boundary to trigger horizontal scrolling - set the boundary large enough
-      // so the user does not need to scroll precisely to activate horizontal scrolling.
-      const inBoundary = topOfPage > -100 && topOfPage < 200
-
-      if (inBoundary) {
+      if (isWithinBoundary()) {
         section.addEventListener("wheel", scrollHorizontally)
       } else {
         section.removeEventListener("wheel", scrollHorizontally)
