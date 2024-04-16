@@ -90,15 +90,21 @@ const slides = [
 <script>
   import { observer } from "../../utils/observer"
 
+  type FocusableElement = HTMLDivElement
+
+  // variables
   const desktop = 1728
 
-  const section = document.getElementById("slides") as HTMLDivElement
+  const wrapper = document.getElementById("slides") as HTMLDivElement
   const mainElement = document.getElementsByTagName("main")[0]
 
-  const firstSlide = document.querySelector("[data-first-slide]")
-  const lastSlide = document.querySelector("[data-last-slide]")
+  let trapFocusController: AbortController | undefined
 
   const scrollAmount = window.innerWidth >= desktop ? 1600 : 1300
+
+  const getFocusableSlides = () => {
+    return [...wrapper.querySelectorAll("[tabindex]")]
+  }
 
   /**
    * TODO - preventDefault is breaking scroll-snap. Removing this allows smoother snap but enables Y scrolling on the page which we do not want in this case.
@@ -106,7 +112,7 @@ const slides = [
   const scrollHorizontally = (e: WheelEvent) => {
     e.preventDefault()
     const delta = Math.max(-1, Math.min(1, e.deltaY))
-    section.scrollLeft += delta * scrollAmount
+    wrapper.scrollLeft += delta * scrollAmount
   }
 
   /**
@@ -117,37 +123,62 @@ const slides = [
       !!entry.target.attributes["data-first-slide"] ||
       !!entry.target.attributes["data-last-slide"]
 
-    isEndOfScroll && section.removeEventListener("wheel", scrollHorizontally)
+    isEndOfScroll && wrapper.removeEventListener("wheel", scrollHorizontally)
   })
 
   /**
-   * We want to add a scroll event to the main element to detect when the slider section reaches
-   * the top of the viewport to trigger horizontal scrolling.
+   * Define boundary to trigger horizontal scrolling - set the boundary large enough
+   *  so the user does not need to scroll precisely to activate horizontal scrolling.
    */
-
   const isWithinBoundary = () => {
-    // Define boundary to trigger horizontal scrolling - set the boundary large enough
-    // so the user does not need to scroll precisely to activate horizontal scrolling.
-    const topOffset = section.offsetTop
+    const topOffset = wrapper.offsetTop
     const topOfPage = topOffset - mainElement.scrollTop
 
     const inBoundary = topOfPage > -100 && topOfPage < 200
     return inBoundary
   }
 
-  // Only activate horizontal scrolling on devices >= 390px
-  if (window.screen.width >= 1440) {
-    mainElement.addEventListener("scroll", (e) => {
-      if (isWithinBoundary()) {
-        section.addEventListener("wheel", scrollHorizontally)
-      } else {
-        section.removeEventListener("wheel", scrollHorizontally)
-      }
-    })
+  const trapFocus = (e: KeyboardEvent, element: HTMLDivElement) => {
+    const slides = getFocusableSlides()
 
-    slideObserver.observe(firstSlide as Element)
-    slideObserver.observe(lastSlide as Element)
+    const first = slides[0]!
+    const last = slides[slides.length - 1]!
+
+    if (document.activeElement === last && e.key === "Tab" && !e.shiftKey) {
+      e.preventDefault()
+      first.focus()
+    }
+
+    if (document.activeElement === first && e.key === "Tab" && e.shiftKey) {
+      e.preventDefault()
+      last.focus()
+    }
   }
+
+  // execution
+  ;(() => {
+    if (window.screen.width >= 1440) {
+      // Only activate horizontal scrolling on devices >= 390px
+      mainElement.addEventListener("scroll", (e) => {
+        if (isWithinBoundary()) {
+          wrapper.addEventListener("wheel", scrollHorizontally)
+        } else {
+          wrapper.removeEventListener("wheel", scrollHorizontally)
+        }
+      })
+
+      trapFocusController = new AbortController()
+
+      document.addEventListener("keydown", (e) => trapFocus(e, wrapper), {
+        signal: trapFocusController.signal,
+      })
+
+      const slides = getFocusableSlides()
+
+      slideObserver.observe(slides[0])
+      slideObserver.observe(slides[slides.length - 1])
+    }
+  })()
 </script>
 
 <style lang="scss">
