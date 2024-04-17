@@ -15,20 +15,20 @@
   .footer {
     position: relative;
     bottom: 0;
-  }
 
-  .footer .inner {
-    display: flex;
-    justify-content: space-between;
-    scroll-snap-align: start;
-    align-items: center;
-    color: $white;
-    height: 88px;
-    padding: 32px 24px;
-    background-color: $darkest-grey;
+    &__inner {
+      display: flex;
+      justify-content: space-between;
+      scroll-snap-align: start;
+      align-items: center;
+      color: $white;
+      height: 88px;
+      padding: 32px 24px;
+      background-color: $darkest-grey;
 
-    @media (min-width: $tablet) {
-      padding: 0 256px;
+      @media (min-width: $tablet) {
+        padding: 0 256px;
+      }
     }
   }
 </style>
